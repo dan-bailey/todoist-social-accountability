@@ -1,34 +1,58 @@
 import requests
 import json
-import datetime
+from dotenv.main import load_dotenv
+import os
 
-# get your own access token from developer.todoist.com
-TODOIST_ACCESS_TOKEN = ""
+from time import gmtime, strftime
+from datetime import datetime
+import time
 
-# eventually the Twitter API access tokens will go here
 
-# build request for Todoist SyncAPI
+# get the .env variables
+load_dotenv()
+
+# calculate difference between GMT and local time
+
+
+# eventually set up a function to change the date from GMT to local
+def localizeDate(originalTime, timeDiff):
+    localizedTime = 0
+    return localizedTime
+
+
+# build request for Todoist SyncAPI, access token comes from .env file
 url = "https://api.todoist.com/sync/v9/completed/get_all"
-headers = { 'Authorization':'Bearer ' + TODOIST_ACCESS_TOKEN }
+headers = { 'Authorization':'Bearer ' + os.environ['TODOIST_ACCESS_TOKEN'] }
+
 
 # get info from Todoist and process it to a workable format
 response = requests.get(url,headers=headers)
 jsonPackage = response.json()
 
+
 # filter down to just the items list, nothing else needed
 todos = jsonPackage['items']
 
-# cut it down to just today's stuff code goes here
 
-# build output list
-toDone = ['Today:','stuff']
-print (type(toDone))
-
+# prep the list for execution
 for todo in todos:
-    toDone.append('✅ ' + todo.get('content'))
+    todo["completed_at"] = todo["completed_at"].replace("T", " ")
+    todo["completed_at"] = todo["completed_at"].replace(".000000Z", "")
+    todo["localized_completion"] = localizeDate(todo["completed_at"], -8)
 
-print(toDone)
+# strip out stuff that didn't happen today
 
+
+# add sort numbers to the  list of todos
+i = 1
+for todo in todos:
+    todo["sort_order"] = i
+    i+=1
+
+# start to build output list
+toDone = ['Today:']
 
 # connect to Twitter
 # post to Twitter
+
+print(json.dumps(todos))
