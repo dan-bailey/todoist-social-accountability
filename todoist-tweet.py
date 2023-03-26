@@ -3,13 +3,17 @@ import json
 from dotenv.main import load_dotenv
 import os
 
-from time import gmtime, strftime
-from datetime import datetime
-import time
+import datetime
+from dateutil import tz
 
+# lockdown what today's date is in the local time zone
+TODAY = datetime.date.today()
+print (TODAY)
 
 # get the .env variables
 load_dotenv()
+
+
 
 # calculate difference between GMT and local time
 
@@ -29,10 +33,8 @@ headers = { 'Authorization':'Bearer ' + os.environ['TODOIST_ACCESS_TOKEN'] }
 response = requests.get(url,headers=headers)
 jsonPackage = response.json()
 
-
 # filter down to just the items list, nothing else needed
 todos = jsonPackage['items']
-
 
 # prep the list for execution
 for todo in todos:
@@ -50,9 +52,9 @@ for todo in todos:
     i+=1
 
 # start to build output list
-toDone = ['Today:']
+# toDone = ['Today:']
 
 # connect to Twitter
 # post to Twitter
 
-print(json.dumps(todos))
+# print(json.dumps(todos))
