@@ -4,11 +4,10 @@ from dotenv.main import load_dotenv
 import os
 
 import datetime
-from dateutil import tz
+from time import gmtime, strftime
 
 # lockdown what today's date is in the local time zone
 TODAY = datetime.date.today()
-print (TODAY)
 
 # get the .env variables
 load_dotenv()
@@ -16,6 +15,12 @@ load_dotenv()
 
 
 # calculate difference between GMT and local time
+dateFormat = "%Y-%m-%d %I:%M:%S %z"
+gmtTime = strftime(dateFormat, gmtime())
+localTime = strftime(dateFormat)
+print (gmtTime)
+print (localTime)
+
 
 
 # eventually set up a function to change the date from GMT to local
@@ -39,7 +44,10 @@ todos = jsonPackage['items']
 # prep the list for execution
 for todo in todos:
     todo["completed_at"] = todo["completed_at"].replace("T", " ")
-    todo["completed_at"] = todo["completed_at"].replace(".000000Z", "")
+    todo["completed_at"] = todo["completed_at"].replace(".000000Z", " GMT")
+    dateFormat = "%Y-%m-%d %I:%m:%s %z"
+    completedDateTime = 0
+
     todo["localized_completion"] = localizeDate(todo["completed_at"], -8)
 
 # strip out stuff that didn't happen today
