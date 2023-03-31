@@ -7,8 +7,13 @@ from datetime import datetime, timedelta
 # get the .env variables
 load_dotenv()
 
+# set formats for datetime
+dateFormatFull = "%Y-%m-%d %H:%M:%S"
+dateFormatShort = "%Y-%m-%d"
+
 # calculate local difference from UTC time
 TIMEDIFF = datetime.utcnow().hour - datetime.now().hour
+TODAY = datetime.now().strftime(dateFormatShort)
 
 # set up a function to change the date from GMT to local
 def LocalizeTime(UTC, difference):
@@ -26,10 +31,10 @@ jsonPackage = response.json()
 # filter down to just the items list, nothing else needed
 todos = jsonPackage['items']
 
+print(type(todos))
+
 # prep the list for execution
 for todo in todos:
-    dateFormatFull = "%Y-%m-%d %H:%M:%S"
-    dateFormatShort = "%Y-%m-%d"
     # clean up formatting on todoist's time entry, below
     todo["completed_at"] = todo["completed_at"].replace("T", " ")
     todo["completed_at"] = todo["completed_at"].replace(".000000Z", "")
@@ -41,18 +46,22 @@ for todo in todos:
     todo["completed_local_date"] = dtObject.strftime(dateFormatShort)
 
 # strip out stuff that didn't happen today
-
+for todo in todos:
+    if todo["completed_local_date"] != TODAY:
+        print("Lose this.")
 
 # add sort numbers to the  list of todos
-# i = 1
+i = 1
 # for todo in todos:
 #    todo["sort_order"] = i
 #    i+=1
 
+completionsToday = "Today I completed " + str(i) + "items:"
+print (completionsToday)
 # start to build output list
-# toDone = ['Today:']
+toDone = [completionsToday]
 
 # connect to Twitter
 # post to Twitter
 
-print(json.dumps(todos))
+# print(json.dumps(todos))
