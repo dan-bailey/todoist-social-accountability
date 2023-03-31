@@ -2,32 +2,21 @@ import requests
 import json
 from dotenv.main import load_dotenv
 import os
-
-import datetime
-from time import gmtime, strftime
-
-# lockdown what today's date is in the local time zone
-TODAY = datetime.date.today()
+from datetime import datetime, timedelta
 
 # get the .env variables
 load_dotenv()
 
+# calculate local difference from UTC time
+TIMEDIFF = datetime.utcnow().hour - datetime.now().hour
 
+# set up a function to change the date from GMT to local
+def LocalizeTime(UTC, difference):
+    out = UTC - timedelta(hours=difference)
+    return out
 
-# calculate difference between GMT and local time
-dateFormat = "%Y-%m-%d %I:%M:%S %z"
-gmtTime = strftime(dateFormat, gmtime())
-localTime = strftime(dateFormat)
-print (gmtTime)
-print (localTime)
-
-
-
-# eventually set up a function to change the date from GMT to local
-def localizeDate(originalTime, timeDiff):
-    localizedTime = 0
-    return localizedTime
-
+# dt_string = LocalizeTime(datetime.utcnow(), TIMEDIFF).strftime("%Y-%m-%d %I:%m:%S")
+# print (dt_string)
 
 # build request for Todoist SyncAPI, access token comes from .env file
 url = "https://api.todoist.com/sync/v9/completed/get_all"
@@ -43,21 +32,26 @@ todos = jsonPackage['items']
 
 # prep the list for execution
 for todo in todos:
+    dateFormatFull = "%Y-%m-%d %H:%M:%S"
+    dateFormatShort = "%Y-%m-%d"
+    # clean up formatting on todoist's time entry, below
     todo["completed_at"] = todo["completed_at"].replace("T", " ")
-    todo["completed_at"] = todo["completed_at"].replace(".000000Z", " GMT")
-    dateFormat = "%Y-%m-%d %I:%m:%s %z"
-    completedDateTime = 0
-
-    todo["localized_completion"] = localizeDate(todo["completed_at"], -8)
+    todo["completed_at"] = todo["completed_at"].replace(".000000Z", "")
+    # convert the completed_at value to a local datetime object, below
+    dtObject = datetime.strptime(todo["completed_at"], dateFormatFull)
+    dtObject = LocalizeTime(dtObject, TIMEDIFF)
+    #store the new values
+    todo["completed_at_local"] = dtObject.strftime(dateFormatFull)
+    todo["completed_local_date"] = dtObject.strftime(dateFormatShort)
 
 # strip out stuff that didn't happen today
 
 
 # add sort numbers to the  list of todos
-i = 1
-for todo in todos:
-    todo["sort_order"] = i
-    i+=1
+# i = 1
+# for todo in todos:
+#    todo["sort_order"] = i
+#    i+=1
 
 # start to build output list
 # toDone = ['Today:']
@@ -65,4 +59,4 @@ for todo in todos:
 # connect to Twitter
 # post to Twitter
 
-# print(json.dumps(todos))
+print(json.dumps(todos))
