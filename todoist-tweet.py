@@ -46,17 +46,18 @@ for todo in todos:
     todo["completed_local_date"] = dtObject.strftime(dateFormatShort)
 
 # strip out stuff that didn't happen today
+
 for todo in todos:
     if todo["completed_local_date"] != TODAY:
-        print("Lose this.")
+        todo.pop()
 
 # add sort numbers to the  list of todos
 i = 1
-# for todo in todos:
-#    todo["sort_order"] = i
-#    i+=1
+for todo in todos:
+    todo["sort_order"] = i
+    i+=1
 
-completionsToday = "Today I completed " + str(i) + "items:"
+completionsToday =  str(i) + " things done:"
 print (completionsToday)
 # start to build output list
 toDone = [completionsToday]

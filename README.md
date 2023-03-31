@@ -2,8 +2,8 @@
 Using crontab, this will post an end-of-day progress report to Twitter. It could probably be repurposed for other things, as well.
 
 # To-dos:
-* get day's completed tasks via API (requires datetime conversion from GMT to local time)
-* build list for posting to Twitter
+* filter list of items so it just shows today's stuff
+* build list for posting to Twitter (break up if over char limit)
 * connect to Twitter account
 * make post
 * install this on my lightweight linux box and set up a cron job
