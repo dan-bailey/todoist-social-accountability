@@ -15,13 +15,9 @@ def LocalizeTime(UTC, difference):
     out = UTC - timedelta(hours=difference)
     return out
 
-# dt_string = LocalizeTime(datetime.utcnow(), TIMEDIFF).strftime("%Y-%m-%d %I:%m:%S")
-# print (dt_string)
-
 # build request for Todoist SyncAPI, access token comes from .env file
 url = "https://api.todoist.com/sync/v9/completed/get_all"
 headers = { 'Authorization':'Bearer ' + os.environ['TODOIST_ACCESS_TOKEN'] }
-
 
 # get info from Todoist and process it to a workable format
 response = requests.get(url,headers=headers)
