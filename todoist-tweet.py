@@ -33,7 +33,7 @@ todos = jsonPackage['items']
 
 print(type(todos))
 
-# prep the list for execution
+# prep the list for execution, count elements
 for todo in todos:
     # clean up formatting on todoist's time entry, below
     todo["completed_at"] = todo["completed_at"].replace("T", " ")
@@ -45,22 +45,17 @@ for todo in todos:
     todo["completed_at_local"] = dtObject.strftime(dateFormatFull)
     todo["completed_local_date"] = dtObject.strftime(dateFormatShort)
 
-# strip out stuff that didn't happen today
-
+# make a list of things that were completed today
+results = []
+x = 0
 for todo in todos:
-    if todo["completed_local_date"] != TODAY:
-        todo.pop()
+    if todo["completed_local_date"] == TODAY:
+        results.insert(0, "✅ " + todo["content"])
+        x += 1
 
-# add sort numbers to the  list of todos
-i = 1
-for todo in todos:
-    todo["sort_order"] = i
-    i+=1
+results.insert(0, str(x) + " items completed today:")
 
-completionsToday =  str(i) + " things done:"
-print (completionsToday)
-# start to build output list
-toDone = [completionsToday]
+print(results)
 
 # connect to Twitter
 # post to Twitter
