@@ -21,6 +21,13 @@ def LocalizeTime(UTC, difference):
     out = UTC - timedelta(hours=difference)
     return out
 
+# Authenticate to Twitter
+auth = tweepy.OAuthHandler(os.environ['TWITTER_CONSUMER_KEY'], os.environ['TWITTER_CONSUMER_SECRET'])
+auth.set_access_token(os.environ['TWITTER_ACCESS_TOKEN'], os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
+
+# Create API Object
+api = tweepy.API(auth)
+
 # build request for Todoist SyncAPI, access token comes from .env file
 url = "https://api.todoist.com/sync/v9/completed/get_all"
 headers = { 'Authorization':'Bearer ' + os.environ['TODOIST_ACCESS_TOKEN'] }
@@ -44,25 +51,39 @@ for todo in todos:
     todo["completed_at_local"] = dtObject.strftime(dateFormatFull)
     todo["completed_local_date"] = dtObject.strftime(dateFormatShort)
 
-# make a list of things that were completed today
+# make a list of things that were completed today, in order
 results = []
 x = 0
 for todo in todos:
     if todo["completed_local_date"] == TODAY:
-        results.insert(0, "✅ " + todo["content"])
+        results.insert(0, "✅ " + todo["content"] + "\n")
         x += 1
 
-results.insert(0, str(x) + " items completed today:")
+# inject post title
+results.insert(0, str(x) + " items completed today:\n")
 
+# calculate the character-length of the list
+listLength = 0
 for item in results:
-    print(item)
+    listLength = listLength + len(item)
 
-# Authenticate to Twitter
-auth = tweepy.OAuthHandler(os.environ['TWITTER_CONSUMER_KEY'], os.environ['TWITTER_CONSUMER_SECRET'])
-auth.set_access_token(os.environ['TWITTER_ACCESS_TOKEN'], os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
+theTweet = ""
+# if the tweet is less than 288 characters, go ahead and fire it off
+if listlength <= 288:
+    for item in results:
+        theTweet = theTweet + item
+    api.update_status(theTweet)
 
-# Create API Object
-api = tweepy.API(auth)
+# if the tweet is more than 288 character, we'll need to break it up into parts
+
+tweetsGroup = []
+nextStartPoint = 0
+def breakUpTweets(resultsList, startPoint):
+    listLength = len(resultsList)
+    tweetLength = 0
+
+
+
 
 # Create a tweet
-api.update_status("Python script test #2.")
+# api.update_status("Python script test #2.")
