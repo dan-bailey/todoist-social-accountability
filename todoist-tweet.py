@@ -2,6 +2,7 @@ import requests
 import json
 from dotenv.main import load_dotenv
 import os
+import tweepy
 from datetime import datetime, timedelta
 
 # get the .env variables
@@ -31,8 +32,6 @@ jsonPackage = response.json()
 # filter down to just the items list, nothing else needed
 todos = jsonPackage['items']
 
-print(type(todos))
-
 # prep the list for execution, count elements
 for todo in todos:
     # clean up formatting on todoist's time entry, below
@@ -55,9 +54,15 @@ for todo in todos:
 
 results.insert(0, str(x) + " items completed today:")
 
-print(results)
+for item in results:
+    print(item)
 
-# connect to Twitter
-# post to Twitter
+# Authenticate to Twitter
+auth = tweepy.OAuthHandler(os.environ['TWITTER_CONSUMER_KEY'], os.environ['TWITTER_CONSUMER_SECRET'])
+auth.set_access_token(os.environ['TWITTER_ACCESS_TOKEN'], os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
 
-# print(json.dumps(todos))
+# Create API Object
+api = tweepy.API(auth)
+
+# Create a tweet
+api.update_status("Python script test #2.")
