@@ -62,21 +62,35 @@ for todo in todos:
 # inject post title
 results.insert(0, str(x) + " items completed today:\n")
 
-# calculate the character-length of the list
+# calculate the character-length of the list and how many elements are in the list
 listLength = 0
+listElements = 1
 for item in results:
     listLength = listLength + len(item)
+    listElements += 1
+    print(item)
 
 theTweet = ""
+print(listLength)
 # if the tweet is less than 288 characters, go ahead and fire it off
-if listlength <= 288:
+if listLength <= 288:
     for item in results:
         theTweet = theTweet + item
     api.update_status(theTweet)
 
 # if the tweet is more than 288 character, we'll need to break it up into parts
+cutoffCount = 0;
 
 tweetsGroup = []
+
+if listLength < 288:
+    numTweets = listLength % 288
+    remainder = listLength - (numTweets * 288)
+    if remainder > 0:
+        numTweets += 1
+
+
+
 nextStartPoint = 0
 def breakUpTweets(resultsList, startPoint):
     listLength = len(resultsList)
