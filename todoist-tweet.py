@@ -4,6 +4,10 @@ from dotenv.main import load_dotenv
 import os
 import tweepy
 from datetime import datetime, timedelta
+import pytz
+
+# set the time zone
+timezone = pytz.timezone("America/Chicago")
 
 # get the .env variables
 load_dotenv()
@@ -14,7 +18,9 @@ dateFormatShort = "%Y-%m-%d"
 
 # calculate local difference from UTC time
 TIMEDIFF = datetime.utcnow().hour - datetime.now().hour
-TODAY = datetime.now().strftime(dateFormatShort)
+TODAY = datetime.now(tz = timezone).strftime(dateFormatShort)
+# TODAY = "2023-03-31"
+print (TODAY)
 
 # set up a function to change the date from GMT to local
 def LocalizeTime(UTC, difference):
@@ -58,7 +64,6 @@ for todo in todos:
     if todo["completed_local_date"] == TODAY:
         results.insert(0, "✅ " + todo["content"] + "\n")
         x += 1
-
 # inject post title
 results.insert(0, str(x) + " items completed today:\n")
 
@@ -68,15 +73,15 @@ listElements = 1
 for item in results:
     listLength = listLength + len(item)
     listElements += 1
-    print(item)
-
-theTweet = ""
 print(listLength)
+theTweet = ""
+
 # if the tweet is less than 288 characters, go ahead and fire it off
 if listLength <= 288:
     for item in results:
         theTweet = theTweet + item
     api.update_status(theTweet)
+    print(theTweet)
 
 # if the tweet is more than 288 character, we'll need to break it up into parts
 cutoffCount = 0;
@@ -98,6 +103,5 @@ def breakUpTweets(resultsList, startPoint):
 
 
 
+# print(todos)
 
-# Create a tweet
-# api.update_status("Python script test #2.")
