@@ -22,7 +22,7 @@ TODAY = datetime.now(tz = timezone).strftime(dateFormatShort)
 # TODAY = "2023-03-31"
 print (TODAY)
 
-# set up a function to change the date from GMT to local
+# set up a function to change the date from GMT to local, returns a datetime object
 def LocalizeTime(UTC, difference):
     out = UTC - timedelta(hours=difference)
     return out
@@ -33,6 +33,20 @@ auth.set_access_token(os.environ['TWITTER_ACCESS_TOKEN'], os.environ['TWITTER_AC
 
 # Create API Object
 api = tweepy.API(auth)
+
+# set up a function to return the ID of the authenticated user's most-recent tweet, for building a whole thread of tweets, if need be
+
+def mostRecentTweetID():
+    timeline = api.user_timeline()
+    return timeline[0].id
+
+def postFirstTweet(initialTweet):
+    api.update_status(initialTweet)
+
+def postAsReply(statusTweet):
+    api.update_status(status = statusTweet, in_reply_to_status_id = mostRecentTweetID(), auto_populate_reply_metadata=True)
+
+
 
 # build request for Todoist SyncAPI, access token comes from .env file
 url = "https://api.todoist.com/sync/v9/completed/get_all"
@@ -62,46 +76,14 @@ results = []
 x = 0
 for todo in todos:
     if todo["completed_local_date"] == TODAY:
-        results.insert(0, "✅ " + todo["content"] + "\n")
+        lineInput = "✅ " + todo["content"] + "\n"
+        results.insert(0, [lineInput, len(lineInput)])
         x += 1
-# inject post title
-results.insert(0, str(x) + " items completed today:\n")
 
-# calculate the character-length of the list and how many elements are in the list
-listLength = 0
-listElements = 1
-for item in results:
-    listLength = listLength + len(item)
-    listElements += 1
-print(listLength)
-theTweet = ""
+# inject post title in the first spot
+listTitle = str(x) + " items completed today:\n"
+results.insert(0, [listTitle, len(listTitle)])
 
-# if the tweet is less than 288 characters, go ahead and fire it off
-if listLength <= 288:
-    for item in results:
-        theTweet = theTweet + item
-    api.update_status(theTweet)
-    print(theTweet)
-
-# if the tweet is more than 288 character, we'll need to break it up into parts
-cutoffCount = 0;
-
-tweetsGroup = []
-
-if listLength < 288:
-    numTweets = listLength % 288
-    remainder = listLength - (numTweets * 288)
-    if remainder > 0:
-        numTweets += 1
-
-
-
-nextStartPoint = 0
-def breakUpTweets(resultsList, startPoint):
-    listLength = len(resultsList)
-    tweetLength = 0
-
-
-
-# print(todos)
+# test results
+print(results)
 
