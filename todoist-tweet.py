@@ -19,7 +19,7 @@ dateFormatShort = "%Y-%m-%d"
 # calculate local difference from UTC time
 TIMEDIFF = datetime.utcnow().hour - datetime.now().hour
 TODAY = datetime.now(tz = timezone).strftime(dateFormatShort)
-# TODAY = "2023-03-31"
+TODAY = "2023-04-03"
 print (TODAY)
 
 # set up a function to change the date from GMT to local, returns a datetime object
@@ -39,9 +39,6 @@ api = tweepy.API(auth)
 def mostRecentTweetID():
     timeline = api.user_timeline()
     return timeline[0].id
-
-def postFirstTweet(initialTweet):
-    api.update_status(initialTweet)
 
 def postAsReply(statusTweet):
     api.update_status(status = statusTweet, in_reply_to_status_id = mostRecentTweetID(), auto_populate_reply_metadata=True)
@@ -84,6 +81,29 @@ for todo in todos:
 listTitle = str(x) + " items completed today:\n"
 results.insert(0, [listTitle, len(listTitle)])
 
-# test results
-print(results)
+
+# character count
+totalChar = 0
+tweetArray = []
+charCount = 0
+tweetTemp = ""
+
+for item in results:
+    totalChar = totalChar + item[1]
+
+
+for item in results:
+    if (charCount + item[1]) < 288:
+        charCount = charCount + item[1]
+        tweetTemp = tweetTemp + item[0]
+    else: #if it doesn't fit 
+        tweetArray.append(tweetTemp)
+        charCount = 0
+        tweetTemp = ""
+
+print(tweetArray)
+print(len(tweetArray[1]))
+        
+
+
 
