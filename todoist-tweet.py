@@ -111,17 +111,15 @@ if (len(tweetTemp) > 0):
     tweetArray.append(tweetTemp)
     tweetTemp = ""
 
-
+# error trapping 
+if (len(tweetArray) = 0):
+    postTweet("✅ either the API is down, or there's an error in the script, or I did fuck-all nothing today...")
 
 # publish the chain of stuff
 maxlength = len(tweetArray)
-print(maxlength)
 count = 1
 if (len(tweetArray) >= 1):
-    # postTweet(tweetArray[0])
-    print(tweetArray[0])
+    postTweet(tweetArray[0])
     while (count < maxlength):
-        # postAsReply(tweetArray[count], mostRecentTweetID())
-        print(" ")
-        print(tweetArray[count])
+        postAsReply(tweetArray[count], mostRecentTweetID())
         count += 1
