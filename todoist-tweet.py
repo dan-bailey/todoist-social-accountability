@@ -6,8 +6,8 @@ import tweepy
 from datetime import datetime, timedelta
 import pytz
 
-# set the time zone
-timezone = pytz.timezone("America/Chicago")
+# set this to your local time zone
+localTimezone = "America/Chicago"
 
 # get the .env variables
 load_dotenv()

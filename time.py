@@ -1,19 +1,41 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 import pytz
 
-TIMEDIFF = datetime.utcnow().hour - datetime.now().hour
-print("Time difference: " + str(TIMEDIFF))
+localFormat = "%Y-%m-%d %H:%M:%S"
+localTimezone = "America/Chicago"
 
-dateFormat = "%Y-%m-%d %H:%M:%S"
+def makeSmartUTCObject(dumbDTObject):
+    smartDT = dumbDTObject.replace(tzinfo=pytz.utc)
+    return smartDT
 
-timeTargetStrings = ["2023-04-04 23:14:16", "2023-04-04 23:08:58", "2023-04-04 23:08:27"]
-timeTargetObjects = []
+def convertToLocalTime(smartDTObject):
+    kickback = smartDTObject.astimezone(pytz.timezone(localTimezone))
+    return kickback
 
-for date in timeTargetStrings:
-    newDate = datetime.strptime(date, dateFormat)
-    timeTargetObjects.append(newDate)
+utcs = [
+"2023-04-05 14:30:10",
+"2023-04-05 15:30:10",
+"2023-04-05 16:30:10",
+"2023-04-05 17:30:10",
+"2023-04-05 18:30:10",
+"2023-04-05 19:30:10",
+"2023-04-05 20:30:10",
+"2023-04-05 21:30:10",
+"2023-04-05 22:30:10",
+"2023-04-05 23:30:10",
+"2023-04-06 00:30:10",
+"2023-04-06 01:30:10",
+"2023-04-06 02:30:10"
+]
 
-for date in timeTargetObjects:
-    date = date - timedelta(hours=TIMEDIFF)
+count = 0
+while (count < 13):
+    target = datetime.strptime(utcs[count], localFormat)
+    a = makeSmartUTCObject(target)
+    b = convertToLocalTime(a)
+    print("UTC: " + a.strftime(localFormat))
+    print("Local: " + b.strftime(localFormat))
+    print(" ")
+    count += 1
 
-print (timeTargetObjects)
+
