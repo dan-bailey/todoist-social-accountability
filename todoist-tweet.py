@@ -18,8 +18,10 @@ dateFormatShort = "%Y-%m-%d"
 
 # calculate local difference from UTC time
 TIMEDIFF = datetime.utcnow().hour - datetime.now().hour
-TODAY = datetime.now(tz = timezone).strftime(dateFormatShort)
-TODAY = "2023-04-03"
+print (datetime.utcnow().hour)
+print (datetime.now().hour)
+print ("Timediff = " + str(TIMEDIFF))
+TODAY = datetime.now().strftime(dateFormatShort)
 print (TODAY)
 
 # set up a function to change the date from GMT to local, returns a datetime object
@@ -83,27 +85,22 @@ results.insert(0, [listTitle, len(listTitle)])
 
 
 # character count
-totalChar = 0
 tweetArray = []
 charCount = 0
 tweetTemp = ""
-
-for item in results:
-    totalChar = totalChar + item[1]
-
 
 for item in results:
     if (charCount + item[1]) < 288:
         charCount = charCount + item[1]
         tweetTemp = tweetTemp + item[0]
     else: #if it doesn't fit 
+        tweetTemp = tweetTemp + str(charCount)
         tweetArray.append(tweetTemp)
         charCount = 0
         tweetTemp = ""
 
-print(tweetArray)
-print(len(tweetArray[1]))
-        
+#print (len(tweetArray))
+#print (tweetArray[0])
+#print (tweetArray[1])
 
-
-
+# print(todos)
