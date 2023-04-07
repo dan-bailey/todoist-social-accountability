@@ -6,5 +6,4 @@ Using crontab, this will post an end-of-day progress report to Twitter. It could
 
 # Learnings:
 * there's a reason the datetime and tzinfo functionality in python is as convoluted as it is -- date/time is complex, yo
-* there's got to be a better way to handle datetime operations in python
 * emoji count as multiple characters; I knew this, but I didn't _know_ this...ugh
